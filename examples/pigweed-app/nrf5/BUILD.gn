@@ -28,18 +28,18 @@ nrf5_platform_dir = "${chip_root}/examples/platform/nrf528xx"
 pw_static_library("hdlc_server") {
   public_configs = [ "${dir_pigweed}/pw_hdlc_lite:default_config" ]
   sources = [
-    "main/main.cpp",
-    "main/include/app_config.h",
     "${dir_pigweed}/pw_hdlc_lite/rpc_example/hdlc_rpc_server.cc",
+    "main/include/app_config.h",
+    "main/main.cpp",
   ]
   deps = [
-    "${nrf5_platform_dir}/sdk:sdk",
+    "$dir_pw_rpc:server",
+    "$dir_pw_rpc/nanopb:echo_service",
+    "${dir_pigweed}/pw_hdlc_lite:pw_rpc",
     "${nrf5_platform_dir}/app/support:freertos_debugging_hooks",
     "${nrf5_platform_dir}/app/support:freertos_newlib_lock_support",
     "${nrf5_platform_dir}/pw_sys_io:pw_sys_io_baremetal_nrf528xx",
-    "${dir_pigweed}/pw_hdlc_lite:pw_rpc",
-    "$dir_pw_rpc/nanopb:echo_service",
-    "$dir_pw_rpc:server",
+    "${nrf5_platform_dir}/sdk:sdk",
     dir_pw_hdlc_lite,
     dir_pw_log,
   ]
@@ -48,9 +48,7 @@ pw_static_library("hdlc_server") {
 nrf5_executable("pigweed_app") {
   output_name = "chip-nrf52840-pigweed-example"
 
-  deps = [
-    ":hdlc_server",
-  ]
+  deps = [ ":hdlc_server" ]
 
   output_dir = root_out_dir
 

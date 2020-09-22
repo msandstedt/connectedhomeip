@@ -23,8 +23,13 @@ pw_assert_BACKEND = "$dir_pw_assert_log"
 pw_sys_io_BACKEND = "${chip_root}/examples/platform/nrf528xx/pw_sys_io:pw_sys_io_baremetal_nrf528xx"
 
 dir_pw_third_party_nanopb = "${chip_root}/third_party/nanopb/repo"
-pw_protobuf_GENERATORS = [ "pwpb", "nanopb_rpc" ]
+pw_protobuf_GENERATORS = [
+  "pwpb",
+  "nanopb_rpc",
+]
 
 # SDK target. This is overriden to add our SDK app_config.h & defines.
-nrf5_sdk_target = get_label_info("${chip_root}/examples/platform/nrf528xx/sdk:sdk", "label_no_toolchain")
+nrf5_sdk_target =
+    get_label_info("${chip_root}/examples/platform/nrf528xx/sdk:sdk",
+                   "label_no_toolchain")
 nrf5_app_config_dir = get_path_info("main/include", "abspath")

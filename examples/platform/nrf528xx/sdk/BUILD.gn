@@ -17,7 +17,6 @@ import("//build_overrides/nrf5_sdk.gni")
 
 import("${nrf5_sdk_build_root}/nrf5_executable.gni")
 import("${nrf5_sdk_build_root}/nrf5_sdk.gni")
-
 assert(current_os == "freertos")
 
 nrf5_platform_dir = "${chip_root}/examples/platform/nrf528xx"
@@ -36,12 +35,12 @@ nrf5_sdk("sdk") {
   ]
 
   sources = [
+    "$nrf5_app_config_dir/app_config.h",
     "${nrf5_platform_dir}/app/project_include/CHIPProjectConfig.h",
     "${nrf5_platform_dir}/app/project_include/FreeRTOSConfig.h",
     "${nrf5_platform_dir}/app/project_include/OpenThreadConfig.h",
     "${nrf5_platform_dir}/app/project_include/freertos_tasks_c_additions.h",
     "${nrf5_platform_dir}/app/project_include/nrf_log_ctrl_internal.h",
-    "$nrf5_app_config_dir/app_config.h",
   ]
 
   defines = []
