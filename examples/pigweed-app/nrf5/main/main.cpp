@@ -16,24 +16,24 @@
 #include <span>
 #include <string_view>
 
-#include "pw_sys_io/sys_io.h"
-#include "pw_sys_io_baremetal_nrf528xx/init.h"
 #include "boards.h"
 #include "nrf_drv_clock.h"
 #include "nrf_gpio.h"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
+#include "pw_sys_io/sys_io.h"
+#include "pw_sys_io_baremetal_nrf528xx/init.h"
 
 using std::byte;
 
 namespace hdlc_example {
-  extern void Start();
-}  // namespace hdlc_example
+extern void Start();
+} // namespace hdlc_example
 
 namespace {
 constexpr uint32_t kLedActive = LEDS_ACTIVE_STATE ? 1 : 0;
-bool led_state = true;
+bool led_state                = true;
 
 uint32_t LogTimestamp(void)
 {
@@ -43,12 +43,13 @@ uint32_t LogTimestamp(void)
 #define LOG_TIMESTAMP_FUNC LogTimestamp
 #define LOG_TIMESTAMP_FREQ 1000
 
-}  // namespace
+} // namespace
 
-int main() {
-  ret_code_t ret;
+int main()
+{
+    ret_code_t ret;
 
-  pw_sys_io_Init();
+    pw_sys_io_Init();
 
 #if JLINK_MMD
     NVIC_SetPriority(DebugMonitor_IRQn, _PRIO_SD_LOWEST);
@@ -86,12 +87,12 @@ int main() {
     NRF_LOG_INFO("==================================================");
     NRF_LOG_FLUSH();
 
-  // Light up the LED as a visual feedback that the flash was
-  // successful.
-  nrf_gpio_cfg_output(SYSTEM_STATE_LED);
-  nrf_gpio_pin_write(SYSTEM_STATE_LED, led_state ? kLedActive : !kLedActive);
+    // Light up the LED as a visual feedback that the flash was
+    // successful.
+    nrf_gpio_cfg_output(SYSTEM_STATE_LED);
+    nrf_gpio_pin_write(SYSTEM_STATE_LED, led_state ? kLedActive : !kLedActive);
 
-  hdlc_example::Start();
+    hdlc_example::Start();
 
-  return 0;
+    return 0;
 }
