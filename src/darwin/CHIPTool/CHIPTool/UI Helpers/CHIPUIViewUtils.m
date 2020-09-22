@@ -1,19 +1,19 @@
 /**
-*
-*    Copyright (c) 2020 Project CHIP Authors
-*
-*    Licensed under the Apache License, Version 2.0 (the "License");
-*    you may not use this file except in compliance with the License.
-*    You may obtain a copy of the License at
-*
-*        http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS,
-*    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*    See the License for the specific language governing permissions and
-*    limitations under the License.
-*/
+ *
+ *    Copyright (c) 2020 Project CHIP Authors
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 
 #import "CHIPUIViewUtils.h"
 
@@ -21,7 +21,7 @@
 
 + (UILabel *)addTitle:(NSString *)title toView:(UIView *)view
 {
-    UILabel *titleLabel = [UILabel new];
+    UILabel * titleLabel = [UILabel new];
     titleLabel.text = title;
     titleLabel.textColor = UIColor.blackColor;
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -37,10 +37,9 @@
 
 + (UIStackView *)stackViewWithLabel:(UILabel *)label result:(UILabel *)result
 {
-    UIStackView *stackView = [UIStackView new];
+    UIStackView * stackView = [UIStackView new];
     stackView.axis = UILayoutConstraintAxisVertical;
-    stackView.distribution = UIStackViewDistributionEqualSpacing
-;
+    stackView.distribution = UIStackViewDistributionEqualSpacing;
     stackView.alignment = UIStackViewAlignmentLeading;
     stackView.spacing = 3;
 
@@ -60,7 +59,7 @@
 
 + (UIView *)viewWithLabel:(UILabel *)label textField:(UITextField *)textField
 {
-    UIView *containingView = [UIView new];
+    UIView * containingView = [UIView new];
 
     label.font = [UIFont systemFontOfSize:17];
     [containingView addSubview:label];
@@ -86,7 +85,7 @@
 
 + (UIView *)viewWithLabel:(UILabel *)label toggle:(UISwitch *)toggle
 {
-    UIView *containingView = [UIView new];
+    UIView * containingView = [UIView new];
 
     label.font = [UIFont systemFontOfSize:17];
     [containingView addSubview:label];
@@ -109,7 +108,7 @@
 
 + (UIView *)viewWithUITextField:(UITextField *)textField button:(UIButton *)button
 {
-    UIView *containingView = [UIView new];
+    UIView * containingView = [UIView new];
 
     textField.font = [UIFont systemFontOfSize:17];
     textField.backgroundColor = UIColor.whiteColor;
