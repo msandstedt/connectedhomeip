@@ -441,7 +441,7 @@ CHIP_ERROR DRBG_get_bytes(uint8_t * out_buffer, const size_t out_length)
     VerifyOrExit(out_buffer != NULL, error = CHIP_ERROR_INVALID_ARGUMENT);
     VerifyOrExit(out_length > 0, error = CHIP_ERROR_INVALID_ARGUMENT);
 
-    result = RAND_pseudo_bytes(Uint8::to_uchar(out_buffer), out_length);
+    result = RAND_priv_bytes(Uint8::to_uchar(out_buffer), out_length);
     VerifyOrExit(result == 1, error = CHIP_ERROR_INTERNAL);
 
 exit:
