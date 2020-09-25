@@ -22,6 +22,9 @@
 #include <transport/RendezvousParameters.h>
 #include <transport/RendezvousSessionDelegate.h>
 #include <transport/SecurePairingSession.h>
+#include <system/SystemPacketBuffer.h>
+
+using ::chip::System::PacketBuffer;
 
 namespace chip {
 
