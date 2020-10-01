@@ -144,6 +144,11 @@ void GenericPlatformManagerImpl_POSIX<ImplClass>::SysUpdate()
         InetLayer.PrepareSelect(mMaxFd, &mReadSet, &mWriteSet, &mErrorSet, mNextTimeout);
     }
 #endif // !(CHIP_SYSTEM_CONFIG_USE_NETWORK_FRAMEWORK)
+
+    // ST override; select must not block.
+    mNextTimeout.tv_sec  = 0;
+    mNextTimeout.tv_usec = 0;
+
 }
 
 template <class ImplClass>
