@@ -145,10 +145,6 @@ void GenericPlatformManagerImpl_POSIX<ImplClass>::SysUpdate()
     }
 #endif // !(CHIP_SYSTEM_CONFIG_USE_NETWORK_FRAMEWORK)
 
-    // ST override; select must not block.
-    mNextTimeout.tv_sec  = 0;
-    mNextTimeout.tv_usec = 0;
-
 }
 
 template <class ImplClass>
@@ -158,11 +154,14 @@ void GenericPlatformManagerImpl_POSIX<ImplClass>::SysProcess()
     uint32_t nextTimeoutMs;
 
     nextTimeoutMs = mNextTimeout.tv_sec * 1000 + mNextTimeout.tv_usec / 1000;
-    ChipLogDetail(DeviceLayer, "Timer: %ld", nextTimeoutMs);
+    //ChipLogDetail(DeviceLayer, "Timer: %ld", nextTimeoutMs);
     _StartChipTimer(nextTimeoutMs);
 
+    // ST override; select must not block.
+    struct timeval immediate = { .tv_sec = 0, .tv_usec = 0 };
+
     Impl()->UnlockChipStack();
-    selectRes = select(mMaxFd + 1, &mReadSet, &mWriteSet, &mErrorSet, &mNextTimeout);
+    selectRes = select(mMaxFd + 1, &mReadSet, &mWriteSet, &mErrorSet, &immediate);
     Impl()->LockChipStack();
 
     if (selectRes < 0)
@@ -195,7 +194,7 @@ void GenericPlatformManagerImpl_POSIX<ImplClass>::_RunEventLoop(void)
     {
         SysUpdate();
         SysProcess();
-    } while (mShouldRunEventLoop.load(std::memory_order_relaxed));
+    } while (0); // mShouldRunEventLoop.load(std::memory_order_relaxed));
 
     Impl()->UnlockChipStack();
 }
