@@ -43,6 +43,7 @@ buildconfig_header("system_buildconfig") {
   header = "SystemBuildConfig.h"
   header_dir = "system"
 
+  config_device_layer = chip_device_platform != "none"
   chip_system_config_posix_locking = chip_system_config_locking == "posix"
   chip_system_config_freertos_locking = chip_system_config_locking == "freertos"
   chip_system_config_no_locking = chip_system_config_locking == "none"
@@ -51,7 +52,7 @@ buildconfig_header("system_buildconfig") {
   have_gettimeofday = chip_system_config_clock == "gettimeofday"
 
   defines = [
-    "CONFIG_DEVICE_LAYER=0",
+    "CONFIG_DEVICE_LAYER=${config_device_layer}",
     "CHIP_SYSTEM_CONFIG_TEST=${chip_build_tests}",
     "CHIP_WITH_NLFAULTINJECTION=${chip_with_nlfaultinjection}",
     "CHIP_SYSTEM_CONFIG_USE_LWIP=${chip_system_config_use_lwip}",
