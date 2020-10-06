@@ -154,7 +154,7 @@ void GenericPlatformManagerImpl_POSIX<ImplClass>::SysProcess()
     uint32_t nextTimeoutMs;
 
     nextTimeoutMs = mNextTimeout.tv_sec * 1000 + mNextTimeout.tv_usec / 1000;
-    //ChipLogDetail(DeviceLayer, "Timer: %ld", nextTimeoutMs);
+    ChipLogDetail(DeviceLayer, "Timer: %ld", nextTimeoutMs);
     _StartChipTimer(nextTimeoutMs);
 
     // ST override; select must not block.
