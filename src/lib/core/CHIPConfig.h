@@ -1798,7 +1798,7 @@
  *
  */
 #ifndef CHIP_PROGRESS_LOGGING
-#define CHIP_PROGRESS_LOGGING                              1
+#define CHIP_PROGRESS_LOGGING                              0
 #endif // CHIP_PROGRESS_LOGGING
 
 /**
