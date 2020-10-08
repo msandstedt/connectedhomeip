@@ -73,7 +73,11 @@ public:
 private:
     Inet::InetLayer * mLayer         = nullptr;                   ///< Associated inet layer
     Inet::IPAddressType mAddressType = Inet::kIPAddressType_IPv6; ///< type of listening socket
-    uint16_t mListenPort             = CHIP_PORT;                 ///< UDP listen port
+    #if CHIP_CONFIG_ENABLE_EPHEMERAL_UDP_PORT
+    uint16_t mListenPort             = 0;                         ///< Bind to an ephemeral port (appropriate for most clients)
+    #else
+    uint16_t mListenPort             = CHIP_PORT;                 ///< Listen on the well-known CHIP port (appropriate for most servers)
+    #endif
     Inet::InterfaceId mInterfaceId   = INET_NULL_INTERFACEID;     ///< Interface to listen on
 };
 
