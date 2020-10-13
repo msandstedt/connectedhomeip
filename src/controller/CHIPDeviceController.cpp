@@ -157,12 +157,12 @@ CHIP_ERROR ChipDeviceController::ConnectDevice(NodeId remoteDeviceId, Rendezvous
     VerifyOrExit(mState == kState_Initialized, err = CHIP_ERROR_INCORRECT_STATE);
     VerifyOrExit(mConState == kConnectionState_NotConnected, err = CHIP_ERROR_INCORRECT_STATE);
 
-#if CONFIG_DEVICE_LAYER && CONFIG_NETWORK_LAYER_BLE
+#if CONFIG_DEVICE_LAYER
     if (!params.HasBleLayer())
     {
         params.SetBleLayer(DeviceLayer::ConnectivityMgr().GetBleLayer());
     }
-#endif // CONFIG_DEVICE_LAYER && CONFIG_NETWORK_LAYER_BLE
+#endif // CONFIG_DEVICE_LAYER
 
     rendezvousSession = new RendezvousSession(this, params.SetLocalNodeId(mLocalDeviceId));
     err               = rendezvousSession->Init();
