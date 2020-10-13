@@ -114,7 +114,7 @@ void CheckMessageTest(nlTestSuite * inSuite, void * inContext, const IPAddress &
     Transport::UDP udp;
 
     Transport::UdpListenParameters listen_params = Transport::UdpListenParameters(&ctx.GetInetLayer()).SetAddressType(addr.Type());
-    listen_params.SetListenPort(50000);
+    listen_params.SetListenPort(CHIP_PORT);
     err = udp.Init(listen_params);
     NL_TEST_ASSERT(inSuite, err == CHIP_NO_ERROR);
 
