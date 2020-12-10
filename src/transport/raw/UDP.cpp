@@ -45,6 +45,7 @@ CHIP_ERROR UDP::Init(UdpListenParameters & params)
 
     if (mState != State::kNotReady)
     {
+    ChipLogError(Inet, "UDP %s %d", __func__, __LINE__);
         Close();
     }
 

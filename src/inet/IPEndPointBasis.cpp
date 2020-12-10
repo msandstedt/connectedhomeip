@@ -1055,6 +1055,7 @@ SocketEvents IPEndPointBasis::PrepareIO()
 
 void IPEndPointBasis::HandlePendingIO(uint16_t aPort)
 {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
     INET_ERROR lStatus = INET_NO_ERROR;
     IPPacketInfo lPacketInfo;
     System::PacketBufferHandle lBuffer;
@@ -1066,6 +1067,7 @@ void IPEndPointBasis::HandlePendingIO(uint16_t aPort)
 
     if (!lBuffer.IsNull())
     {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
         struct iovec msgIOV;
         PeerSockAddr lPeerSockAddr;
         uint8_t controlData[256];
@@ -1089,10 +1091,12 @@ void IPEndPointBasis::HandlePendingIO(uint16_t aPort)
 
         if (rcvLen < 0)
         {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
             lStatus = chip::System::MapErrorPOSIX(errno);
         }
         else if (rcvLen > lBuffer->AvailableDataLength())
         {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
             lStatus = INET_ERROR_INBOUND_MESSAGE_TOO_BIG;
         }
         else
@@ -1101,34 +1105,41 @@ void IPEndPointBasis::HandlePendingIO(uint16_t aPort)
 
             if (lPeerSockAddr.any.sa_family == AF_INET6)
             {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
                 lPacketInfo.SrcAddress = IPAddress::FromIPv6(lPeerSockAddr.in6.sin6_addr);
                 lPacketInfo.SrcPort    = ntohs(lPeerSockAddr.in6.sin6_port);
             }
 #if INET_CONFIG_ENABLE_IPV4
             else if (lPeerSockAddr.any.sa_family == AF_INET)
             {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
                 lPacketInfo.SrcAddress = IPAddress::FromIPv4(lPeerSockAddr.in.sin_addr);
                 lPacketInfo.SrcPort    = ntohs(lPeerSockAddr.in.sin_port);
             }
 #endif // INET_CONFIG_ENABLE_IPV4
             else
             {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
                 lStatus = INET_ERROR_INCORRECT_STATE;
             }
         }
 
         if (lStatus == INET_NO_ERROR)
         {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
             for (struct cmsghdr * controlHdr = CMSG_FIRSTHDR(&msgHeader); controlHdr != nullptr;
                  controlHdr                  = CMSG_NXTHDR(&msgHeader, controlHdr))
             {
 #if INET_CONFIG_ENABLE_IPV4
 #ifdef IP_PKTINFO
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
                 if (controlHdr->cmsg_level == IPPROTO_IP && controlHdr->cmsg_type == IP_PKTINFO)
                 {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
                     struct in_pktinfo * inPktInfo = reinterpret_cast<struct in_pktinfo *> CMSG_DATA(controlHdr);
                     if (!CanCastTo<InterfaceId>(inPktInfo->ipi_ifindex))
                     {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
                         lStatus = INET_ERROR_INCORRECT_STATE;
                         break;
                     }
@@ -1142,9 +1153,11 @@ void IPEndPointBasis::HandlePendingIO(uint16_t aPort)
 #ifdef IPV6_PKTINFO
                 if (controlHdr->cmsg_level == IPPROTO_IPV6 && controlHdr->cmsg_type == IPV6_PKTINFO)
                 {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
                     struct in6_pktinfo * in6PktInfo = reinterpret_cast<struct in6_pktinfo *> CMSG_DATA(controlHdr);
                     if (!CanCastTo<InterfaceId>(in6PktInfo->ipi6_ifindex))
                     {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
                         lStatus = INET_ERROR_INCORRECT_STATE;
                         break;
                     }
@@ -1158,15 +1171,18 @@ void IPEndPointBasis::HandlePendingIO(uint16_t aPort)
     }
     else
     {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
         lStatus = INET_ERROR_NO_MEMORY;
     }
 
     if (lStatus == INET_NO_ERROR)
     {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
         OnMessageReceived(this, std::move(lBuffer), &lPacketInfo);
     }
     else
     {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
         if (OnReceiveError != nullptr && lStatus != chip::System::MapErrorPOSIX(EAGAIN))
             OnReceiveError(this, lStatus, nullptr);
     }
