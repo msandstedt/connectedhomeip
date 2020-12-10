@@ -37,6 +37,7 @@ namespace chip {
 
 CHIP_ERROR TransportMgrBase::Init(Transport::Base * transport)
 {
+    ChipLogDetail(Inet, "%s %d", __func__, __LINE__);
     if (mTransport != nullptr)
     {
         return CHIP_ERROR_INCORRECT_STATE;
@@ -54,10 +55,12 @@ void TransportMgrBase::HandleMessageReceived(const PacketHeader & packetHeader, 
         packetHeader.GetFlags().Has(Header::FlagValues::kSecure) ? dispatcher->mSecureSessionMgr : dispatcher->mRendezvous;
     if (handler != nullptr)
     {
+        ChipLogDetail(Inet, "%s %d", __func__, __LINE__);
         handler->OnMessageReceived(packetHeader, peerAddress, std::move(msg));
     }
     else
     {
+        ChipLogDetail(Inet, "%s %d", __func__, __LINE__);
         char addrBuffer[Transport::PeerAddress::kMaxToStringSize];
         peerAddress.ToString(addrBuffer, sizeof(addrBuffer));
         ChipLogError(Inet, "%s message from %s is dropped since no corresponding handler is set in TransportMgr.",

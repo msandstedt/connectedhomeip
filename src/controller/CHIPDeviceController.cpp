@@ -83,6 +83,7 @@ constexpr const char kPairedDeviceKeyPrefix[]     = "PairedDevice";
 
 DeviceController::DeviceController()
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     mState                    = State::NotInitialized;
     mSessionManager           = nullptr;
     mLocalDeviceId            = 0;
@@ -94,6 +95,7 @@ DeviceController::DeviceController()
 CHIP_ERROR DeviceController::Init(NodeId localDeviceId, PersistentStorageDelegate * storageDelegate, System::Layer * systemLayer,
                                   Inet::InetLayer * inetLayer)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err = CHIP_NO_ERROR;
 
     VerifyOrExit(mState == State::NotInitialized, err = CHIP_ERROR_INCORRECT_STATE);
@@ -152,6 +154,7 @@ exit:
 
 CHIP_ERROR DeviceController::Shutdown()
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err = CHIP_NO_ERROR;
 
     VerifyOrExit(mState == State::Initialized, err = CHIP_ERROR_INCORRECT_STATE);
@@ -194,6 +197,7 @@ exit:
 
 CHIP_ERROR DeviceController::SetUdpListenPort(uint16_t listenPort)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     if (mState == State::Initialized)
     {
         return CHIP_ERROR_INCORRECT_STATE;
@@ -205,6 +209,7 @@ CHIP_ERROR DeviceController::SetUdpListenPort(uint16_t listenPort)
 
 CHIP_ERROR DeviceController::GetDevice(NodeId deviceId, const SerializedDevice & deviceInfo, Device ** out_device)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err  = CHIP_NO_ERROR;
     Device * device = nullptr;
     uint16_t index  = 0;
@@ -238,6 +243,7 @@ exit:
 
 CHIP_ERROR DeviceController::GetDevice(NodeId deviceId, Device ** out_device)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err  = CHIP_NO_ERROR;
     Device * device = nullptr;
     uint16_t index  = 0;
@@ -340,6 +346,7 @@ void DeviceController::OnMessageReceived(const PacketHeader & header, const Payl
                                          const Transport::PeerConnectionState * state, System::PacketBufferHandle msgBuf,
                                          SecureSessionMgr * mgr)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err = CHIP_NO_ERROR;
     uint16_t index = 0;
     NodeId peer;
@@ -363,6 +370,7 @@ exit:
 
 uint16_t DeviceController::GetInactiveDeviceIndex()
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     uint16_t i = 0;
     while (i < kNumMaxActiveDevices && mActiveDevices[i].IsActive())
         i++;
@@ -376,11 +384,13 @@ uint16_t DeviceController::GetInactiveDeviceIndex()
 
 void DeviceController::ReleaseDevice(Device * device)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     device->Reset();
 }
 
 void DeviceController::ReleaseDevice(uint16_t index)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     if (index < kNumMaxActiveDevices)
     {
         ReleaseDevice(&mActiveDevices[index]);
@@ -389,6 +399,7 @@ void DeviceController::ReleaseDevice(uint16_t index)
 
 void DeviceController::ReleaseAllDevices()
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     for (uint16_t i = 0; i < kNumMaxActiveDevices; i++)
     {
         ReleaseDevice(&mActiveDevices[i]);
@@ -397,6 +408,7 @@ void DeviceController::ReleaseAllDevices()
 
 uint16_t DeviceController::FindDeviceIndex(NodeId id)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     uint16_t i = 0;
     while (i < kNumMaxActiveDevices)
     {
@@ -411,6 +423,7 @@ uint16_t DeviceController::FindDeviceIndex(NodeId id)
 
 CHIP_ERROR DeviceController::SetPairedDeviceList(const char * serialized)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err  = CHIP_NO_ERROR;
     size_t len      = strlen(serialized) + 1;
     uint16_t lenU16 = static_cast<uint16_t>(len);
@@ -436,6 +449,7 @@ void DeviceController::OnStatus(const char * key, Operation op, CHIP_ERROR err) 
 
 DeviceCommissioner::DeviceCommissioner()
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     mPairingDelegate      = nullptr;
     mRendezvousSession    = nullptr;
     mDeviceBeingPaired    = kNumMaxActiveDevices;
@@ -446,6 +460,7 @@ CHIP_ERROR DeviceCommissioner::Init(NodeId localDeviceId, PersistentStorageDeleg
                                     DevicePairingDelegate * pairingDelegate, System::Layer * systemLayer,
                                     Inet::InetLayer * inetLayer)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err = DeviceController::Init(localDeviceId, storageDelegate, systemLayer, inetLayer);
     SuccessOrExit(err);
 
@@ -457,6 +472,7 @@ exit:
 
 CHIP_ERROR DeviceCommissioner::Shutdown()
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err = CHIP_NO_ERROR;
 
     VerifyOrExit(mState == State::Initialized, err = CHIP_ERROR_INCORRECT_STATE);
@@ -480,6 +496,7 @@ exit:
 CHIP_ERROR DeviceCommissioner::PairDevice(NodeId remoteDeviceId, RendezvousParameters & params, uint16_t remotePort,
                                           Inet::InterfaceId interfaceId)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err  = CHIP_NO_ERROR;
     Device * device = nullptr;
 
@@ -522,6 +539,7 @@ CHIP_ERROR DeviceCommissioner::PairDevice(NodeId remoteDeviceId, RendezvousParam
 exit:
     if (err != CHIP_NO_ERROR)
     {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
         if (mRendezvousSession != nullptr)
         {
             chip::Platform::Delete(mRendezvousSession);
@@ -542,6 +560,7 @@ CHIP_ERROR DeviceCommissioner::PairTestDeviceWithoutSecurity(NodeId remoteDevice
                                                              SerializedDevice & serialized, uint16_t remotePort,
                                                              Inet::InterfaceId interfaceId)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err  = CHIP_NO_ERROR;
     Device * device = nullptr;
 
@@ -569,15 +588,19 @@ CHIP_ERROR DeviceCommissioner::PairTestDeviceWithoutSecurity(NodeId remoteDevice
     OnRendezvousComplete();
 
 exit:
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     if (testSecurePairingSecret != nullptr)
     {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
         chip::Platform::Delete(testSecurePairingSecret);
     }
 
     if (err != CHIP_NO_ERROR)
     {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
         if (device != nullptr)
         {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
             ReleaseDevice(device);
             mDeviceBeingPaired = kNumMaxActiveDevices;
         }
@@ -587,9 +610,11 @@ exit:
 }
 CHIP_ERROR DeviceCommissioner::StopPairing(NodeId remoteDeviceId)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err  = CHIP_NO_ERROR;
     Device * device = nullptr;
 
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     VerifyOrExit(mState == State::Initialized, err = CHIP_ERROR_INCORRECT_STATE);
     VerifyOrExit(mDeviceBeingPaired < kNumMaxActiveDevices, err = CHIP_ERROR_INCORRECT_STATE);
 
@@ -598,6 +623,7 @@ CHIP_ERROR DeviceCommissioner::StopPairing(NodeId remoteDeviceId)
 
     if (mRendezvousSession != nullptr)
     {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
         chip::Platform::Delete(mRendezvousSession);
         mRendezvousSession = nullptr;
     }
@@ -606,11 +632,13 @@ CHIP_ERROR DeviceCommissioner::StopPairing(NodeId remoteDeviceId)
     mDeviceBeingPaired = kNumMaxActiveDevices;
 
 exit:
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     return err;
 }
 
 CHIP_ERROR DeviceCommissioner::UnpairDevice(NodeId remoteDeviceId)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     // TODO: Send unpairing message to the remote device.
 
     if (mStorageDelegate != nullptr)
@@ -625,6 +653,7 @@ CHIP_ERROR DeviceCommissioner::UnpairDevice(NodeId remoteDeviceId)
 
 void DeviceCommissioner::RendezvousCleanup(CHIP_ERROR status)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     if (mRendezvousSession != nullptr)
     {
         chip::Platform::Delete(mRendezvousSession);
@@ -650,11 +679,13 @@ void DeviceCommissioner::RendezvousCleanup(CHIP_ERROR status)
 
 void DeviceCommissioner::OnRendezvousError(CHIP_ERROR err)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     RendezvousCleanup(err);
 }
 
 void DeviceCommissioner::OnRendezvousComplete()
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     CHIP_ERROR err  = CHIP_NO_ERROR;
     Device * device = nullptr;
 
@@ -689,6 +720,7 @@ exit:
 
 void DeviceCommissioner::OnRendezvousStatusUpdate(RendezvousSessionDelegate::Status status, CHIP_ERROR err)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     Device * device = nullptr;
     if (mDeviceBeingPaired >= kNumMaxActiveDevices)
     {
@@ -733,6 +765,7 @@ exit:
 
 void DeviceCommissioner::PersistDeviceList()
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     if (mStorageDelegate != nullptr && mPairedDevicesUpdated)
     {
         constexpr uint16_t size = CHIP_MAX_SERIALIZED_SIZE_U64(kNumMaxPairedDevices);
@@ -754,6 +787,7 @@ void DeviceCommissioner::PersistDeviceList()
 
 void DeviceCommissioner::ReleaseDevice(Device * device)
 {
+    ChipLogError(Controller, "%s %d", __func__, __LINE__);
     PersistDeviceList();
     DeviceController::ReleaseDevice(device);
 }

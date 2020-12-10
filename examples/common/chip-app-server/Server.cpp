@@ -44,6 +44,7 @@ namespace {
 
 bool isRendezvousBypassed()
 {
+    ChipLogProgress(AppServer, "%s %d", __func__, __LINE__);
     RendezvousInformationFlags rendezvousMode = RendezvousInformationFlags::kBLE;
 
 #ifdef CONFIG_RENDEZVOUS_MODE
@@ -64,6 +65,7 @@ public:
                            const Transport::PeerConnectionState * state, System::PacketBufferHandle buffer,
                            SecureSessionMgr * mgr) override
     {
+    ChipLogProgress(AppServer, "%s %d", __func__, __LINE__);
         const size_t data_len = buffer->DataLength();
         char src_addr[PeerAddress::kMaxToStringSize];
 
@@ -119,6 +121,7 @@ SecureSessionMgr & chip::SessionManager()
 // The server assumes the platform's networking has been setup already
 void InitServer(AppDelegate * delegate)
 {
+    ChipLogProgress(AppServer, "%s %d", __func__, __LINE__);
     CHIP_ERROR err = CHIP_NO_ERROR;
     Optional<Transport::PeerAddress> peer(Transport::Type::kUndefined);
 

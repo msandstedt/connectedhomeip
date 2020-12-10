@@ -157,6 +157,7 @@ static INET_ERROR LwIPBindInterface(struct udp_pcb * aUDP, InterfaceId intfId)
  */
 INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uint16_t port, InterfaceId intfId)
 {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d", __LINE__);
     INET_ERROR res = INET_NO_ERROR;
 
 #if CHIP_SYSTEM_CONFIG_USE_NETWORK_FRAMEWORK
@@ -168,17 +169,20 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
 
     if (mState != kState_Ready && mState != kState_Bound)
     {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d", __LINE__);
         res = INET_ERROR_INCORRECT_STATE;
         goto exit;
     }
 
     if ((addr != IPAddress::Any) && (addr.Type() != kIPAddressType_Any) && (addr.Type() != addrType))
     {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d", __LINE__);
         res = INET_ERROR_WRONG_ADDRESS_TYPE;
         goto exit;
     }
 
 #if CHIP_SYSTEM_CONFIG_USE_LWIP
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
 
     // Lock LwIP stack
     LOCK_TCPIP_CORE();
@@ -189,22 +193,29 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
     // Bind the PCB to the specified address/port.
     if (res == INET_NO_ERROR)
     {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
 #if LWIP_VERSION_MAJOR > 1 || LWIP_VERSION_MINOR >= 5
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         ip_addr_t ipAddr = addr.ToLwIPAddr();
 #if INET_CONFIG_ENABLE_IPV4
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         lwip_ip_addr_type lType = IPAddress::ToLwIPAddrType(addrType);
         IP_SET_TYPE_VAL(ipAddr, lType);
 #endif // INET_CONFIG_ENABLE_IPV4
         res = chip::System::MapErrorLwIP(udp_bind(mUDP, &ipAddr, port));
 #else // LWIP_VERSION_MAJOR <= 1 && LWIP_VERSION_MINOR < 5
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         if (addrType == kIPAddressType_IPv6)
         {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
             ip6_addr_t ipv6Addr = addr.ToIPv6();
             res                 = chip::System::MapErrorLwIP(udp_bind_ip6(mUDP, &ipv6Addr, port));
         }
 #if INET_CONFIG_ENABLE_IPV4
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         else if (addrType == kIPAddressType_IPv4)
         {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
             ip4_addr_t ipv4Addr = addr.ToIPv4();
             res                 = chip::System::MapErrorLwIP(udp_bind(mUDP, &ipv4Addr, port));
         }
@@ -216,6 +227,7 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
 
     if (res == INET_NO_ERROR)
     {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         res = LwIPBindInterface(mUDP, intfId);
     }
 
@@ -227,6 +239,7 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
 #endif // CHIP_SYSTEM_CONFIG_USE_LWIP
 
 #if CHIP_SYSTEM_CONFIG_USE_SOCKETS
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d, iface=%d", __LINE__, port, intfId);
 
     // Make sure we have the appropriate type of socket.
     res = GetSocket(addrType);
@@ -241,6 +254,7 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
     // If an ephemeral port was requested, retrieve the actual bound port.
     if (port == 0)
     {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         union
         {
             struct sockaddr any;
@@ -249,14 +263,18 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
         } boundAddr;
         socklen_t boundAddrLen = sizeof(boundAddr);
 
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         if (getsockname(mSocket, &boundAddr.any, &boundAddrLen) == 0)
         {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
             if (boundAddr.any.sa_family == AF_INET)
             {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
                 mBoundPort = ntohs(boundAddr.in.sin_port);
             }
             else if (boundAddr.any.sa_family == AF_INET6)
             {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
                 mBoundPort = ntohs(boundAddr.in6.sin6_port);
             }
         }
@@ -265,9 +283,11 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
 #endif // CHIP_SYSTEM_CONFIG_USE_SOCKETS
 
 #if CHIP_SYSTEM_CONFIG_USE_NETWORK_FRAMEWORK
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
 
     if (intfId != INET_NULL_INTERFACEID)
     {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         res = INET_ERROR_NOT_IMPLEMENTED;
         goto exit;
     }
@@ -275,6 +295,7 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
     configure_tls = NW_PARAMETERS_DISABLE_PROTOCOL;
     parameters    = nw_parameters_create_secure_udp(configure_tls, NW_PARAMETERS_DEFAULT_CONFIGURATION);
 
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d, iface=%d", __LINE__, port, parameters);
     res = IPEndPointBasis::Bind(addrType, addr, port, parameters);
     SuccessOrExit(res);
 
@@ -282,8 +303,10 @@ INET_ERROR UDPEndPoint::Bind(IPAddressType addrType, const IPAddress & addr, uin
 
 #endif // CHIP_SYSTEM_CONFIG_USE_NETWORK_FRAMEWORK
 
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
     if (res == INET_NO_ERROR)
     {
+    ChipLogError(Inet, "UDPEndPoint::Bind %d, port=%d", __LINE__, port);
         mState = kState_Bound;
     }
 

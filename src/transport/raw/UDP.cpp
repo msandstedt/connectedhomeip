@@ -40,6 +40,7 @@ UDP::~UDP()
 
 CHIP_ERROR UDP::Init(UdpListenParameters & params)
 {
+    ChipLogError(Inet, "UDP %s %d", __func__, __LINE__);
     CHIP_ERROR err = CHIP_NO_ERROR;
 
     if (mState != State::kNotReady)
@@ -78,6 +79,7 @@ exit:
 
 void UDP::Close()
 {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
     if (mUDPEndPoint)
     {
         // Udp endpoint is only non null if udp endpoint is initialized and listening
@@ -90,6 +92,7 @@ void UDP::Close()
 
 CHIP_ERROR UDP::SendMessage(const PacketHeader & header, const Transport::PeerAddress & address, System::PacketBuffer * msgIn)
 {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
     System::PacketBufferHandle msgBuf;
     msgBuf.Adopt(msgIn);
 
@@ -120,6 +123,7 @@ CHIP_ERROR UDP::SendMessage(const PacketHeader & header, const Transport::PeerAd
 
 void UDP::OnUdpReceive(Inet::IPEndPointBasis * endPoint, System::PacketBufferHandle buffer, const Inet::IPPacketInfo * pktInfo)
 {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
     CHIP_ERROR err          = CHIP_NO_ERROR;
     UDP * udp               = reinterpret_cast<UDP *>(endPoint->AppState);
     uint16_t headerSize     = 0;
@@ -135,6 +139,7 @@ void UDP::OnUdpReceive(Inet::IPEndPointBasis * endPoint, System::PacketBufferHan
 exit:
     if (err != CHIP_NO_ERROR)
     {
+    ChipLogError(Inet, "%s %d", __func__, __LINE__);
         ChipLogError(Inet, "Failed to receive UDP message: %s", ErrorStr(err));
     }
 }

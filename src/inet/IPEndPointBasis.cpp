@@ -679,10 +679,15 @@ done:
 #if CHIP_SYSTEM_CONFIG_USE_SOCKETS
 INET_ERROR IPEndPointBasis::Bind(IPAddressType aAddressType, const IPAddress & aAddress, uint16_t aPort, InterfaceId aInterfaceId)
 {
+    char lAddressBuffer[INET6_ADDRSTRLEN + 20] = { 0 };
+    aAddress.ToString(lAddressBuffer, INET6_ADDRSTRLEN);
+    ChipLogError(Inet, "IPEndPointBasis::Bind %d, address=%s, port=%d, iface=%d", __LINE__, lAddressBuffer, aPort, aInterfaceId);
+
     INET_ERROR lRetval = INET_NO_ERROR;
 
     if (aAddressType == kIPAddressType_IPv6)
     {
+    ChipLogError(Inet, "IPEndPointBasis::Bind %d", __LINE__);
         struct sockaddr_in6 sa;
 
         memset(&sa, 0, sizeof(sa));
@@ -692,6 +697,7 @@ INET_ERROR IPEndPointBasis::Bind(IPAddressType aAddressType, const IPAddress & a
         sa.sin6_addr   = aAddress.ToIPv6();
         if (!CanCastTo<decltype(sa.sin6_scope_id)>(aInterfaceId))
         {
+    ChipLogError(Inet, "IPEndPointBasis::Bind %d", __LINE__);
             return INET_ERROR_INCORRECT_STATE;
         }
         sa.sin6_scope_id = static_cast<decltype(sa.sin6_scope_id)>(aInterfaceId);
